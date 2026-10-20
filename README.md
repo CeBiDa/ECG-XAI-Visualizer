@@ -3,7 +3,7 @@
 
 # ECG-XAI-Visualizer
 
-This Python reads raw 12 lead ECG data, applies a diagnostic CNN (in this case cardiac ischemia detection) and shows why the model decides for presenece or abscence of the diagnosis using explainable AI (**XAI**). Four XAI methods are implemented: **Grad-CAM**, **saliency maps**, **SmoothGrad×SIGN** and **LIME**. Based on those XAI models the parts of the ECG signal that drove the prediction are marked. The XAI based attributions are then split across the ECG segments *P wave*, *QRS complex*, *ST segment*, and *T wave*. So each prediction comes with a statement such as "40 % of the top attribution lies in the ST segment". 
+This Python reads raw 12 lead ECG data, applies a diagnostic CNN (in this case cardiac ischemia detection) and shows why the model decides for presenece or abscence of the diagnosis using explainable AI (**XAI**). Four XAI methods are implemented: **Grad-CAM***, **saliency maps***, **SmoothGrad×SIGN*** and **LIME**. Based on those XAI models the parts of the ECG signal that drove the prediction are marked. The XAI based attributions are then split across the ECG segments *P wave*, *QRS complex*, *ST segment*, and *T wave*. So each prediction comes with a statement such as "40 % of the top attribution lies in the ST segment". 
 
 ```
 ECG files (mat / wfdb / csv / asc / dcm / xml / hl7)  ──►  ischemia probability + XAI attribution per record  +  xai_summary.csv  +  <record>_xai[_<method>].png
@@ -26,12 +26,9 @@ ECG-XAI-Visualizer uses the same ECG readers and filters as our [ECG-Format-Conv
 - [How it works](#how-it-works)
 - [The model](#the-model)
 - [Explainability](#explainability)
-- [Changes from the beatsML Gradio app](#changes-from-the-beatsml-gradio-app)
 - [Technical stack](#technical-stack)
 - [Configuration](#configuration)
 - [Project structure](#project-structure)
-- [Debugging](#debugging)
-- [Limitations and data-quality notes](#limitations-and-data-quality-notes)
 - [License](#license)
 
 ---
@@ -224,7 +221,7 @@ ECG file ──► reader  │ mat | wfdb | csv | asc | dcm | xml | hl7         
 
 ## The model
 
-**CNN Model** classifies ischemia vs. no ischemia. A dilated multi-scale convolutional stem (kernels 3, 5, 7) feeds three bottleneck residual blocks with squeeze-and-excitation and stochastic depth (128 → 256 channels, each halving the time axis); after global average pooling, age and sex are appended and a dropout + linear layer returns two logits. Activations are ReLU. It has 207,713 parameters. The weights ship in `models/finetuned_ischemia_robust_model.pth`, the robust fine-tuned release: a stochastic weight average (SWA) of 20 snapshots, saved as the state_dict of PyTorch's `AveragedModel`.
+The **CNN Model** used as an example classifies ischemia vs. no ischemia. A dilated multi-scale convolutional stem (kernels 3, 5, 7) feeds three bottleneck residual blocks with squeeze-and-excitation and stochastic depth (128 → 256 channels, each halving the time axis); after global average pooling, age and sex are appended and a dropout + linear layer returns two logits. Activations are ReLU. It has 207,713 parameters. The weights ship in `models/finetuned_ischemia_robust_model.pth`, the robust fine-tuned release: a stochastic weight average (SWA) of 20 snapshots, saved as the state_dict of PyTorch's `AveragedModel`.
 
 | Input  | Value                                                                                                                                                                                                                    |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
