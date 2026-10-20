@@ -1,0 +1,10 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+# PyInstaller output (ECG-XAI-Visualizer.spec / build.yml)
+build/
+dist/
