@@ -11,6 +11,12 @@ ECG files (mat / wfdb / csv / asc / dcm / xml / hl7)  ──►  ischemia probab
 
 ECG-XAI-Visualizer uses the same ECG readers and filters as our [ECG-Format-Converter](https://github.com/CeBiDa/ECG-Format-Converter) app [DOI: 10.5281/zenodo.22871601].
 
+<p align="center">
+  <img src="docs/images/gui-xai.png" width="100%" alt="ECG-XAI-Visualizer desktop app: settings panel on the left; on the right the XAI viewer with lead II shaded by P wave, QRS, ST segment and T wave, the Grad-CAM attribution curve, the segment-share bars and a details panel with the prediction">
+  <br>
+  <sub>The desktop app after a run: one synthetic 12-lead recording (WFDB, 500 Hz) analysed with notch + bandpass filtering and wavelet baseline removal; the viewer shows the Grad-CAM explanation and its P / QRS / ST / T split on lead II.</sub>
+</p>
+
 ---
 
 ## Table of contents
@@ -44,6 +50,8 @@ Ready-to-use executables of the cross-platform GUI app are built by GitHub Actio
 | Linux x86_64                | `ECG-XAI-Visualizer-linux-x86_64.zip`    |
 
 Download, unzip, and run. No Python installation required. Builds are produced with PyInstaller and include the CPU build of PyTorch and the model weights.
+
+The executables are not code-signed. On first start, macOS (14 or later) blocks the app until you click *Open Anyway* under *System Settings → Privacy & Security*, and Windows SmartScreen may ask you to confirm with *More info → Run anyway*.
 
 ## Features
 
