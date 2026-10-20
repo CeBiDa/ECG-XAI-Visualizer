@@ -3,7 +3,7 @@
 
 # ECG-XAI-Visualizer
 
-This Python reads raw 12 lead ECG data, applies a diagnostic CNN (in this case cardiac ischemia detection) and shows why the model decides for presenece or abscence of the diagnosis using explainable AI (**XAI**). Four XAI methods are implemented: **Grad-CAM***, **saliency maps***, **SmoothGrad×SIGN*** and **LIME**. Based on those XAI models the parts of the ECG signal that drove the prediction are marked. The XAI based attributions are then split across the ECG segments *P wave*, *QRS complex*, *ST segment*, and *T wave*. So each prediction comes with a statement such as "40 % of the top attribution lies in the ST segment". 
+This Python reads raw 12 lead ECG data, applies a diagnostic CNN (in this case cardiac ischemia detection) and shows why the model decides for presenece or abscence of the diagnosis using explainable AI (**XAI**). Four XAI methods are implemented: **Grad-CAM**, **saliency maps**, **SmoothGrad×SIGN** and **LIME**. Based on those XAI models the parts of the ECG signal that drove the prediction are marked. The XAI based attributions are then split across the ECG segments *P wave*, *QRS complex*, *ST segment*, and *T wave*. So each prediction comes with a statement such as "40 % of the top attribution lies in the ST segment". 
 
 ```
 ECG files (mat / wfdb / csv / asc / dcm / xml / hl7)  ──►  ischemia probability + XAI attribution per record  +  xai_summary.csv  +  <record>_xai[_<method>].png
