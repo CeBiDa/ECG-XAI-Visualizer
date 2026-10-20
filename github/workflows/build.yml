@@ -1,0 +1,111 @@
+name: Build Executables
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux
+            arch: x86_64
+            artifact_name: ECG-XAI-Visualizer-linux-x86_64.zip
+          - os: windows-latest
+            platform: windows
+            arch: x86_64
+            artifact_name: ECG-XAI-Visualizer-windows-x86_64.zip
+          - os: macos-latest
+            platform: macos-arm64
+            arch: arm64
+            artifact_name: ECG-XAI-Visualizer-macos-arm64.app.zip
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check the agent skill copies
+        if: matrix.platform == 'linux'
+        run: sh skills/sync.sh --check
+
+      - name: Install dependencies (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            libgl1 libegl1 libxcb-xinerama0
+          pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Install dependencies (Windows)
+        if: matrix.platform == 'windows'
+        run: |
+          pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Install dependencies (macOS)
+        if: startsWith(matrix.platform, 'macos')
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable
+        run: pyinstaller ECG-XAI-Visualizer.spec
+
+      - name: Package Linux
+        if: matrix.platform == 'linux'
+        run: |
+          cd dist
+          chmod +x ECG-XAI-Visualizer/ECG-XAI-Visualizer
+          zip -r ../${{ matrix.artifact_name }} ECG-XAI-Visualizer/
+
+      - name: Package Windows
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: Compress-Archive -Path "dist\ECG-XAI-Visualizer" -DestinationPath "${{ matrix.artifact_name }}"
+
+      - name: Package macOS
+        if: startsWith(matrix.platform, 'macos')
+        run: |
+          cd dist
+          zip -r -y ../${{ matrix.artifact_name }} ECG-XAI-Visualizer.app/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}
+          retention-days: 14
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Attach binaries to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true
