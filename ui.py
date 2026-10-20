@@ -217,6 +217,7 @@ QComboBox:on {{ border-color: {ACCENT}; background: #101A26; }}
 QComboBox:disabled, QDoubleSpinBox:disabled {{
     color: {DISABLED_TEXT}; border-color: #1A2531; background: #0B1119;
 }}
+NumberBox::up-button, NumberBox::down-button {{ subcontrol-origin: border; }}
 QComboBox {{ padding-right: 24px; }}
 QComboBox::drop-down {{ border: none; background: transparent; width: 24px; }}
 QComboBox::down-arrow {{ image: none; width: 0; height: 0; }}
